@@ -1,3 +1,6 @@
+![Daise Logo](https://github.com/user-attachments/assets/79a0a723-003d-4940-9f4d-7455bb1a33df)
+
+
 # D.A.I.S.E - Delivery Autonomous Intelligent Sidewalk Explorer
 
 ##
