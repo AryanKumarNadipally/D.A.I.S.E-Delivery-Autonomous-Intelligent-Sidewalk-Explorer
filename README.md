@@ -1,10 +1,12 @@
 # D.A.I.S.E - Delivery Autonomous Intelligent Sidewalk Explorer
 
+##
 ## Introduction
 Welcome to the D.A.I.S.E project! This repository contains the complete source code and documentation for building and operating a low-cost delivery robot within a $400 budget. This project aims to demonstrate that effective robotic delivery systems can be developed economically without relying on prebuilt libraries or software.
 
 D.A.I.S.E (Delivery Autonomous Intelligent Sidewalk Explorer) is designed to navigate sidewalks, avoid obstacles, and deliver goods to specified locations using a combination of GPS, LiDAR, camera, and IMU sensors. The project leverages sensor fusion and custom algorithms for path planning, obstacle avoidance, and re-routing.
 
+##
 ## Objectives
 
 - **Low-Cost Design**: Develop a functional delivery robot within a $400 budget.
@@ -12,35 +14,108 @@ D.A.I.S.E (Delivery Autonomous Intelligent Sidewalk Explorer) is designed to nav
 - **Obstacle Avoidance**: Implement robust obstacle detection and avoidance using LiDAR and camera sensors.
 - **Sensor Fusion**: Combine data from multiple sensors (GPS, IMU, LiDAR, Camera) to improve navigation accuracy.
 - **Real-Time Visualization**: Real-time visualization of the robot's path and current position.
-  
+
+##  
 ## Key Features
 
 - **GPS-Based Navigation**: The robot uses GPS coordinates for global path planning and navigation.
-- **Carrot-Chasing Algorithm**: Implements a carrot-chasing algorithm to guide the robot along the predefined path.
+- **Carrot-chasing Algorithm**: Implements a carrot-chasing algorithm to guide the robot along the predefined path.
 - **LiDAR Obstacle Detection**: A 2D LiDAR sensor detects and avoids obstacles in the robot's path.
 - **Camera-Based Path Planning**: A single Raspberry Pi camera is used for local path planning and obstacle detection.
 - **IMU Integration**: Incorporates an IMU sensor to monitor and adjust the robot's orientation.
 - **Sensor Fusion**: Combines data from GPS, IMU, LiDAR, and camera for improved accuracy and reliability.
 - **Real-Time Visualization**: Displays the robot's path and current position using Matplotlib for real-time monitoring.
 
+##
 ## Hardware Components
 
 - **Raspberry Pi 4 Computer Model B**: The main processing unit for running the robot's software.
-- **Four DC Motors with Hall Effect Sensors**: Provides mobility and feedback for speed control.
+- **Four DC Motors with Hall Effect Sensors**: Provide mobility and speed control feedback.
 - **RPLIDAR A1**: A 2D LiDAR sensor for obstacle detection.
 - **Adafruit Ultimate GPS Breakout Board**: For GPS-based navigation.
-- **MPU-6050**: A 3-Axis Accelerometer and Gyro Sensor for orientation.
+- **MPU-6050**: A 3-axis Accelerometer and Gyro Sensor for orientation.
 - **Arducam 5MP Camera (OV5647)**: For local path planning and obstacle detection.
 - **Power System**: Includes a LiPo battery, buck converter, and L298N motor drivers.
 
-## Circuit Design
-
-![Circuit Design](path_to_circuit_design_image)
-
+##
 ## Mechanical Design
 
 ![Mechanical Design](path_to_mechanical_design_image)
 
+##
+## Detailed Electronic Connections for D.A.I.S.E.
+
+### Components and Their Connections
+
+#### 1. Raspberry Pi 4 Computer Model B
+- **Power Supply**: Connect the Raspberry Pi to a 5V power source using a USB-C power adapter.
+- **GPIO Pins**: Used to connect various sensors and modules.
+
+#### 2. Four DC Motors with Hall Effect Sensors
+- **Motor Driver (L298N)**:
+  - **Back Left Motor (motor1)**:
+    - IN1 (Motor Driver) to GPIO 17 (Raspberry Pi)
+    - IN2 (Motor Driver) to GPIO 18 (Raspberry Pi)
+    - ENA (Motor Driver) to GPIO 22 (Raspberry Pi)
+    - ENCODER A (Motor) to GPIO 27 (Raspberry Pi)
+    - ENCODER B (Motor) to GPIO 4 (Raspberry Pi)
+  - **Back Right Motor (motor2)**:
+    - IN1 (Motor Driver) to GPIO 23 (Raspberry Pi)
+    - IN2 (Motor Driver) to GPIO 24 (Raspberry Pi)
+    - ENA (Motor Driver) to GPIO 25 (Raspberry Pi)
+    - ENCODER A (Motor) to GPIO 5 (Raspberry Pi)
+    - ENCODER B (Motor) to GPIO 6 (Raspberry Pi)
+  - **Front Left Motor (motor3)**:
+    - IN1 (Motor Driver) to GPIO 5 (Raspberry Pi)
+    - IN2 (Motor Driver) to GPIO 6 (Raspberry Pi)
+    - ENA (Motor Driver) to GPIO 13 (Raspberry Pi)
+    - ENCODER A (Motor) to GPIO 12 (Raspberry Pi)
+    - ENCODER B (Motor) to GPIO 16 (Raspberry Pi)
+  - **Front Right Motor (motor4)**:
+    - IN1 (Motor Driver) to GPIO 19 (Raspberry Pi)
+    - IN2 (Motor Driver) to GPIO 26 (Raspberry Pi)
+    - ENA (Motor Driver) to GPIO 21 (Raspberry Pi)
+    - ENCODER A (Motor) to GPIO 20 (Raspberry Pi)
+    - ENCODER B (Motor) to GPIO 21 (Raspberry Pi)
+
+#### 3. RPLIDAR A1 (2D LiDAR Sensor)
+- **Connection to Raspberry Pi**:
+  - **Power Supply**: Connect the LiDAR to a 5V power source.
+  - **Data Connection**: Use a USB to serial adapter to connect the LiDAR to the Raspberry Pi.
+    - USB Port on Raspberry Pi to USB connector on LiDAR.
+
+#### 4. Adafruit Ultimate GPS Breakout Board
+- **Connection to Raspberry Pi**:
+  - VCC (GPS) to 5V (Raspberry Pi)
+  - GND (GPS) to GND (Raspberry Pi)
+  - TX (GPS) to GPIO 15 (Raspberry Pi)
+  - RX (GPS) to GPIO 14 (Raspberry Pi)
+
+#### 5. MPU-6050 (3-Axis Accelerometer and Gyro Sensor)
+- **Connection to Raspberry Pi**:
+  - VCC (MPU-6050) to 3.3V (Raspberry Pi)
+  - GND (MPU-6050) to GND (Raspberry Pi)
+  - SCL (MPU-6050) to GPIO 3 (SCL) (Raspberry Pi)
+  - SDA (MPU-6050) to GPIO 2 (SDA) (Raspberry Pi)
+
+#### 6. Arducam 5MP Camera (OV5647)
+- **Connection to Raspberry Pi**:
+  - Connect the camera module to the Raspberry Pi's camera interface (CSI) port. Ensure the ribbon cable is correctly oriented and securely inserted.
+
+#### 7. Power System
+- **LiPo Battery**:
+  - Connect the positive terminal of the LiPo battery to the 12V power rail on the breadboard.
+  - Connect the negative terminal of the LiPo battery to the common ground rail on the breadboard.
+- **Buck Converter**:
+  - Input: Connect to the 12V power rail on the breadboard.
+  - Output: Adjust to 5V and connect to the 5V power rail on the breadboard.
+- **Raspberry Pi Power**:
+  - 5V from the buck converter to Pin 2 (5V) on the Raspberry Pi.
+  - Ground to Pin 6 (GND) on the Raspberry Pi.
+
+![Daise Electronics](https://github.com/user-attachments/assets/0046365f-de82-46ab-b9c2-d106c93564ef)
+
+##
 ## Major Concepts of Robotics Involved in the D.A.I.S.E. Project
 
 ### Kinematics and Dynamics
@@ -84,6 +159,7 @@ D.A.I.S.E (Delivery Autonomous Intelligent Sidewalk Explorer) is designed to nav
 - **Modular Design**: Structures code into modules for readability, maintainability, and scalability.
 - **Threading**: Uses threads to handle different tasks concurrently.
 
+##
 ## Detailed Description of Each Script in the D.A.I.S.E. Project
 
 ### `main.py`
@@ -211,7 +287,8 @@ D.A.I.S.E (Delivery Autonomous Intelligent Sidewalk Explorer) is designed to nav
 
 - **Recording Coordinates**:
   - `record_coordinates()`: Records GPS coordinates and saves to `gps_coordinates.csv`.
- 
+
+## 
 ## Step-by-Step Guide to Running the D.A.I.S.E. Project
 
 ### 1. Setting Up the VNC Viewer
@@ -281,3 +358,58 @@ python3 record_coordinates.py
 ```
 python3 main.py
 ```
+
+##
+## Flowchart
+
+![Daise flowchart 2](https://github.com/user-attachments/assets/ce58a0d2-4acc-49fe-a863-7bfec431cd85)
+
+### Start:
+- The process begins by initializing all system components. This includes setting up the Raspberry Pi, initializing the sensor fusion thread, starting the LiDAR motor, and checking the sensor’s health status.
+- The sensor fusion process is initiated in a separate thread to continuously integrate data from multiple sensors (GPS, IMU, LiDAR, Camera).
+
+### User Input:
+- After initializing the system components, the user is prompted to input the destination coordinates (latitude and longitude). These coordinates define the robot's final destination.
+- The predefined path, loaded from `gps_coordinates.csv`, is used in conjunction with the user-inputted destination to guide the robot.
+
+### Main Control Loop:
+- The robot enters the main control loop, which operates continuously until the destination is reached or the process is interrupted.
+- In each iteration of the loop:
+  - **Fetch Current State**: The robot’s current state (position, velocity, orientation) is fetched from the shared state object, continuously updated by the sensor fusion thread.
+  - **Update Visualization**: The real-time visualization plot is updated with the robot's current position to provide visual feedback on its progress.
+  - **Read LiDAR Data**: LiDAR data is read to detect obstacles in the robot’s path. If an obstacle is detected, the `handle_obstacle()` function is called to manage the obstacle.
+
+### Obstacle Detection and Handling:
+
+#### LiDAR Obstacle Detection:
+- If the LiDAR sensor detects an obstacle:
+  - The robot stops immediately.
+  - The robot waits for 25 seconds to see if the obstacle clears on its own.
+  - If the obstacle persists after 25 seconds, the `calculate_detour_path(scan_data)` function is called to find a path around the obstacle using the A* algorithm.
+  - The robot follows the detour path calculated by the A* algorithm.
+  - After navigating the obstacle, the robot returns to the predefined path and resumes its journey.
+
+#### Camera Obstacle Detection:
+- If an obstacle is detected by the camera:
+  - The robot stops immediately.
+  - The robot waits for 25 seconds to see if the obstacle clears on its own.
+  - If the obstacle persists after 25 seconds, the `calculate_detour_path(obstacle_mask)` function is called to find a path around the obstacle using the A* algorithm.
+  - The robot follows the detour path calculated by the A* algorithm.
+  - After navigating the obstacle, the robot returns to the predefined path and resumes its journey.
+
+### Path Following:
+- The robot uses the carrot-chasing algorithm to follow the predefined path. This involves continuously adjusting its movement based on the lookahead point (carrot) on the path.
+- The `find_carrot_index(current_lat, current_lon, path, 5)` function finds the next carrot point on the path.
+- The `move_to_carrot(current_lat, current_lon, carrot_lat, carrot_lon)` function calculates the direction and distance to the carrot point and moves the robot accordingly.
+
+### Dynamic Re-Routing:
+- If obstacles are encountered, the robot dynamically recalculates the path and follows a detour using the A* algorithm.
+- The robot temporarily leaves the predefined path to navigate around the obstacle.
+- Once the obstacle is cleared, the robot recalculates its position and re-joins the predefined path to continue toward the destination.
+
+### Completion:
+- The process continues iteratively, with the robot fetching its current state, updating the visualization, reading sensor data, and adjusting its path as needed.
+- The loop repeats until the robot reaches the final destination as defined by the user-inputted coordinates.
+- Once the destination is reached, the flowchart ends, marking the completion of the robot's navigation task.
+
+By following these detailed steps, the D.A.I.S.E. project ensures that the robot can autonomously navigate from its initial position to the final destination, avoiding obstacles and dynamically adjusting its path as needed. This comprehensive process leverages advanced robotics concepts, sensor fusion, and real-time decision-making to achieve efficient and reliable autonomous navigation.
