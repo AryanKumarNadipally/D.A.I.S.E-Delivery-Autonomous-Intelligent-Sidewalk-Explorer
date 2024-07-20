@@ -612,3 +612,44 @@ python3 main.py
 - Once the destination is reached, the flowchart ends, marking the completion of the robot's navigation task.
 
 By following these detailed steps, the D.A.I.S.E. project ensures that the robot can autonomously navigate from its initial position to the final destination, avoiding obstacles and dynamically adjusting its path as needed. This comprehensive process leverages advanced robotics concepts, sensor fusion, and real-time decision-making to achieve efficient and reliable autonomous navigation.
+
+## Video Demo
+To see the D.A.I.S.E. robot in action, check out our video demonstration:
+
+https://sites.google.com/view/cse-598-group-12/home
+
+---
+
+## Improvements or Future Work
+The D.A.I.S.E. project represents a successful prototype of a low-cost autonomous delivery robot. However, several improvements and future developments can enhance its performance and capabilities:
+
+1. **Buck Converter**: In future iterations, I will use the DFrobot Buck converter, known for its accuracy and reliability.
+2. **Better Motors**: Upgrading to higher quality motors will improve the robot's movement precision and durability.
+3. **Depth Camera or Stereo Camera**: Incorporating a depth camera or a stereo camera system will enhance the robot's obstacle detection and path planning abilities.
+4. **RTK GPS Module**: The current GPS module lacks the necessary accuracy for long-distance navigation. An RTK GPS module will significantly improve the robot's positional accuracy.
+5. **Deep Learning or VSLAM**: Integrating deep learning techniques or Visual Simultaneous Localization and Mapping (VSLAM) will enable more advanced navigation and environment understanding.
+6. **Custom PCB**: Developing a custom PCB will streamline the electronic setup, reduce wiring complexity, and improve reliability.
+7. **Data Sharing System**: Enhancing the data sharing system between the robot and the main computer is crucial. Implementing WebRTC or WebSocket for data transmission and developing a web interface for data visualization and control using WiFi will facilitate better communication and control.
+8. **Delivery System and Payload**: To make the robot suitable for real-world delivery applications, adding a payload carrying system and developing a customer-oriented delivery system will be essential.
+9. **Improved Battery Management**: Implementing a more efficient battery management system will extend the operational time of the robot.
+10. **Enhanced Software Architecture**: Refactoring the software to make it more modular and scalable will facilitate easier maintenance and future upgrades.
+
+---
+
+## Acknowledgment
+This project was undertaken as part of the course CSE 598: Perception in Robotics during Spring 2024.
+
+**Professor:**
+Dr. Nakul Gopalan
+
+**Team Members:**
+- Sai Shivani Lingampally
+- Anish Sai Racha
+- Jhanvi Shailesh Shah
+
+I would like to express my gratitude to Dr. Nakul Gopalan for his guidance and support throughout the project. Special thanks to my teammates Sai Shivani Lingampally, Anish Sai Racha, and Jhanvi Shailesh Shah for their collaboration and hard work.
+
+Thank you to everyone who contributed to the success of this project.
+
+---
+
