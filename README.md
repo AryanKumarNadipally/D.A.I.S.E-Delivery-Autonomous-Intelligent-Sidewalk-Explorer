@@ -3,11 +3,13 @@
 
 # D.A.I.S.E - Delivery Autonomous Intelligent Sidewalk Explorer
 
-##
 ## Introduction
 Welcome to the D.A.I.S.E project! This repository contains the complete source code and documentation for building and operating a low-cost delivery robot within a $400 budget. This project aims to demonstrate that effective robotic delivery systems can be developed economically without relying on prebuilt libraries or software.
 
 D.A.I.S.E (Delivery Autonomous Intelligent Sidewalk Explorer) is designed to navigate sidewalks, avoid obstacles, and deliver goods to specified locations using a combination of GPS, LiDAR, camera, and IMU sensors. The project leverages sensor fusion and custom algorithms for path planning, obstacle avoidance, and re-routing.
+
+This project is the first prototype of D.A.I.S.E, built using materials and tools available within our budget constraints. As a prototype, the robot does not carry any payload because our initial focus is testing and validating the software and navigation systems.
+
 
 ##
 ## Objectives
@@ -43,7 +45,15 @@ D.A.I.S.E (Delivery Autonomous Intelligent Sidewalk Explorer) is designed to nav
 ##
 ## Mechanical Design
 
-![Mechanical Design](path_to_mechanical_design_image)
+### CAD model
+
+![Daise Cad 1](https://github.com/user-attachments/assets/fba48c3a-4e46-4f30-a954-b9f4530a71fc)
+
+![1](https://github.com/user-attachments/assets/b6c09015-8b60-48e4-a60f-0cec64677b67)
+
+![2](https://github.com/user-attachments/assets/0d81e27a-5235-48e2-bed2-acbad210dda5)
+
+As this is a prototype, the outer body was designed using a storage box from a dollar store, and 3D-printed parts were used to attach and support certain components. All the components were arranged and placed with consideration to maintain the center of gravity and ensure stability. This approach allowed us to focus on the functionality and testing of the software while staying within our budget constraints.
 
 ##
 ## Detailed Electronic Connections for D.A.I.S.E.
@@ -51,7 +61,7 @@ D.A.I.S.E (Delivery Autonomous Intelligent Sidewalk Explorer) is designed to nav
 ### Components and Their Connections
 
 #### 1. Raspberry Pi 4 Computer Model B
-- **Power Supply**: Connect the Raspberry Pi to a 5V power source using a USB-C power adapter.
+- **Power Supply**: Connect the Raspberry Pi to a 5V power source using the 5V rail from the buck converter.
 - **GPIO Pins**: Used to connect various sensors and modules.
 
 #### 2. Four DC Motors with Hall Effect Sensors
@@ -83,9 +93,7 @@ D.A.I.S.E (Delivery Autonomous Intelligent Sidewalk Explorer) is designed to nav
 
 #### 3. RPLIDAR A1 (2D LiDAR Sensor)
 - **Connection to Raspberry Pi**:
-  - **Power Supply**: Connect the LiDAR to a 5V power source.
-  - **Data Connection**: Use a USB to serial adapter to connect the LiDAR to the Raspberry Pi.
-    - USB Port on Raspberry Pi to USB connector on LiDAR.
+  - **Data and Power Connection**: Connect the LiDAR via USB to the Raspberry Pi.
 
 #### 4. Adafruit Ultimate GPS Breakout Board
 - **Connection to Raspberry Pi**:
@@ -117,6 +125,16 @@ D.A.I.S.E (Delivery Autonomous Intelligent Sidewalk Explorer) is designed to nav
   - Ground to Pin 6 (GND) on the Raspberry Pi.
 
 ![Daise Electronics](https://github.com/user-attachments/assets/0046365f-de82-46ab-b9c2-d106c93564ef)
+
+
+##
+## Assembly of D.A.I.S.E
+https://github.com/user-attachments/assets/a9027fc0-b29c-4042-94c8-281aaddbccc7
+
+
+
+https://github.com/user-attachments/assets/8f086992-f5dc-48b8-a38d-5520f3ea8299
+
 
 ##
 ## Major Concepts of Robotics Involved in the D.A.I.S.E. Project
