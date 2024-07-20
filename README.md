@@ -131,8 +131,6 @@ As this is a prototype, the outer body was designed using a storage box from a d
 ## Assembly of D.A.I.S.E
 https://github.com/user-attachments/assets/a9027fc0-b29c-4042-94c8-281aaddbccc7
 
-
-
 https://github.com/user-attachments/assets/8f086992-f5dc-48b8-a38d-5520f3ea8299
 
 
@@ -141,44 +139,224 @@ https://github.com/user-attachments/assets/8f086992-f5dc-48b8-a38d-5520f3ea8299
 
 ### Kinematics and Dynamics
 
-- **4WD Differential Drive Kinematics**: Controls movement using a four-wheel-drive system with differential drive kinematics.
-- **PID Control**: Maintains precise control over motor speeds using PID controllers.
+#### 4WD Differential Drive Kinematics
+To control its movement, the D.A.I.S.E. robot uses a four-wheel-drive (4WD) system with differential drive kinematics. This involves controlling the speeds and directions of the four DC motors to achieve forward, backward, and turning motions.
+
+**Mathematical Formulation:**
+
+The following equations can describe the differential drive kinematics:
+
+$$v = \frac{r}{2} (\omega_r + \omega_l)$$
+
+$$\omega = \frac{r}{d} (\omega_r - \omega_l)$$
+
+Where:
+- `v`  is the linear velocity of the robot.
+- `omega` is the angular velocity of the robot.
+- `r` is the radius of the wheels.
+- `d` is the distance between the wheels.
+- `omega_r` and `omega_l` are the angular velocities of the right and left wheels, respectively.
+
+**Implementation:**
+In the motor control script, the speeds of the motors are controlled using PWM signals. The direction of each motor is controlled using GPIO pins to achieve the desired motion. The motor encoders provide feedback to adjust the motor speeds and directions accurately.
+
+#### PID Control
+Proportional-Integral-Derivative (PID) controllers are used to maintain precise control over the motor speeds. Each motor's speed is regulated using a PID controller that adjusts the motor's power based on the difference between the desired and actual speeds.
+
+**PID Control Equations:**
+
+$$u(t) = K_p e(t) + K_i \int e(t) dt + K_d \frac{de(t)}{dt}$$
+
+where:
+- `u(t)` is the control input.
+- `K_p`, `K_i`, and `K_d` are the proportional, integral, and derivative gains, respectively.
+- `e(t)` is the error between the desired and actual speeds.
+
+**Implementation:**
+In the motor control script, PID controllers are implemented for each motor. The encoder readings provide feedback for the actual motor speeds, and the PID controller adjusts the PWM signals to maintain the desired speeds.
 
 ### Sensor Integration and Fusion
 
-- **Sensor Fusion**: Combines data from multiple sensors to improve navigation and obstacle detection.
-- **Kalman Filtering**: Estimates the robot’s state from noisy sensor measurements.
+#### Sensor Fusion
+Sensor fusion combines data from multiple sensors (GPS, IMU, LiDAR, Camera) to improve the accuracy and robustness of the robot's navigation and obstacle detection.
+
+**Implementation:**
+The sensor fusion script continuously collects data from the GPS, IMU, LiDAR, and Camera sensors. The data is integrated to estimate the robot's state (position, velocity, orientation) using a Kalman filter.
+
+#### Kalman Filtering
+A Kalman filter is used to estimate the robot’s state from noisy sensor measurements. The filter integrates data from the GPS, IMU, and other sensors to provide a more accurate and consistent estimate of the robot's position and movement.
+
+**Kalman Filter Equations:**
+
+![Screenshot 2024-07-20 090501](https://github.com/user-attachments/assets/a1c650a5-4e41-4cce-9981-f05b83b098e6)
+
+Where:
+
+- `hat{x}_{k|k-1}` is the predicted state estimate.
+- `P_{k|k-1}` is the predicted covariance estimate.
+- `K_k` is the Kalman gain.
+- `z_k` is the measurement.
+- `F`, `B`, `H`, `Q`, and `R` are the system matrices.
 
 ### Localization and Mapping
 
-- **GPS Navigation**: Uses a GPS module to record paths and navigate to predefined coordinates.
-- **IMU Data**: Provides accelerometer and gyroscope data for orientation and stability.
-- **LiDAR Mapping**: Creates occupancy grids to identify obstacles.
+#### GPS Navigation
+The robot uses a GPS module to record its path and navigate to predefined coordinates. GPS coordinates are used for global path planning and to track the robot's position on a larger scale.
+
+**Implementation:**
+The GPS module provides latitude and longitude data, which is recorded and used to define the robot's path. The path-following script uses this data to guide the robot to its destination.
+
+#### IMU Data
+An IMU (Inertial Measurement Unit) provides accelerometer and gyroscope data to estimate the robot's orientation and motion. This data is crucial for correcting the robot's course and maintaining stability.
+
+**Implementation:**
+The IMU module provides orientation (roll, pitch, yaw) and acceleration data. This data is integrated with the GPS data in the sensor fusion script to improve the accuracy of the robot's state estimation.
+
+#### LiDAR Mapping
+A 2D LiDAR sensor creates occupancy grids to identify obstacles in the robot's path. The LiDAR data is processed to map the environment, helping the robot to detect and avoid obstacles dynamically.
+
+**Implementation:**
+The LiDAR object detection script processes the LiDAR data to detect obstacles. The data is used to create an occupancy grid, which is used for obstacle detection and avoidance.
 
 ### Path Planning and Following
 
-- **Carrot Chasing Algorithm**: Follows a look-ahead point on the predefined path.
-- **A Star Pathfinding**: Finds the shortest path around obstacles.
+#### Carrot Chasing Algorithm
+The carrot-chasing algorithm is used for path following, where the robot follows a look-ahead point (carrot) on the predefined path. The robot continually adjusts its direction to chase the carrot point, ensuring it stays on course.
+
+**Algorithm:**
+
+1. Determine the current position of the robot.
+2. Find the path's next look-ahead point (carrot) within a specified look-ahead distance.
+3. Calculate the direction and distance to the carrot point.
+4. Adjust the robot's movement to follow the carrot point.
+
+**Implementation:**
+The path-following script implements the carrot-chasing algorithm. The current position is fetched from the sensor fusion script, and the next carrot point is determined. The robot's movement is adjusted accordingly.
+
+#### A* Pathfinding
+When obstacles are detected, the A* algorithm finds the shortest path around them. This algorithm calculates an optimal detour, allowing the robot to navigate around obstacles and return to the predefined path efficiently.
+
+**A* Algorithm:**
+
+1. Initialize the start and goal nodes.
+2. Add the start node to the open list.
+3. While the open list is not empty:
+   - Select the node with the lowest f-cost (g-cost + h-cost).
+   - If the goal node is reached, reconstruct the path.
+   - Otherwise, expand the node and add its neighbors to the open list.
+4. Use the reconstructed path as the detour.
+
+**Implementation:**
+When an obstacle is detected, the detour path is calculated using the A* algorithm. The robot follows the detour path and then returns to the predefined path.
 
 ### Obstacle Detection and Avoidance
 
-- **LiDAR Obstacle Detection**: Detects obstacles based on distance measurements.
-- **Camera-Based Obstacle Detection**: Image processing is used to detect obstacles in the field of view.
+#### LiDAR Obstacle Detection
+The LiDAR sensor detects obstacles based on distance measurements. When an obstacle is detected within a threshold distance, the robot stops and initiates rerouting to avoid the obstacle.
+
+**Implementation:**
+The LiDAR object detection script reads the LiDAR data and checks for obstacles within a threshold distance. If an obstacle is detected, the robot stops and calculates a detour path using the A* algorithm.
+
+#### Camera-Based Obstacle Detection
+The camera detects obstacles in the robot's field of view using image processing techniques. This helps in identifying obstacles that may not be detected by the LiDAR, particularly those that are below the LiDAR's detection height.
+
+**Implementation:**
+The camera path planning script captures frames from the camera and processes them to detect obstacles. If an obstacle is detected, the robot stops and calculates a detour path using the A* algorithm.
 
 ### Real-Time Control and Decision Making
 
-- **Control Loops**: Adjusts motor speeds and directions based on sensor inputs.
-- **Dynamic Re-Routing**: Modifies the path in real-time based on obstacle detection.
+#### Control Loops
+Real-time control loops adjust motor speeds and directions based on sensor inputs. These loops ensure the robot responds quickly to changes in its environment, maintaining smooth and accurate movement.
+
+**Implementation:**
+Control loops are implemented in the motor control script. The PID controllers adjust the motor speeds based on encoder feedback to maintain the desired speeds.
+
+#### Dynamic Re-Routing
+
+Dynamic re-routing enables the robot to adapt to obstacles in real-time by calculating detour paths around obstacles and then returning to the original predefined path. This process involves obstacle detection, path planning, and seamlessly transitioning between paths to ensure the robot reaches its final destination efficiently and safely.
+
+**Detailed Steps**
+
+1. **Obstacle Detection**:
+   - **LiDAR Obstacle Detection**: The LiDAR sensor continuously scans the environment and measures distances to nearby objects. If an obstacle is detected within a threshold distance (e.g., 1 meter), the robot immediately stops.
+     - **Implementation**:
+       - The `read_lidar_data()` function in `lidar_object_detection.py` reads the LiDAR data.
+       - If any distance measurement is below the threshold, the `handle_obstacle()` function is triggered.
+   - **Camera-Based Obstacle Detection**: The camera captures frames, and image processing techniques are used to identify obstacles within the robot's field of view. If an obstacle is detected, the robot stops.
+     - **Implementation**:
+       - The `get_camera_data()` function in `camera_path_planning.py` captures and processes camera frames.
+       - If an obstacle is detected, the `camera_handle_obstacle()` function is triggered.
+
+2. **Handling Obstacle**:
+   - **Stop the Robot**: As soon as an obstacle is detected, the robot's motors are stopped to prevent a collision.
+     - **Implementation**:
+       - The `stop()` function in `motor_control.py` stops all motors.
+   - **Wait for 25 Seconds**: The robot waits for 25 seconds to check if the obstacle clears on its own.
+     - **Implementation**:
+       - The `time.sleep(25)` statement in the `handle_obstacle()` function introduces a 25-second delay.
+
+3. **Re-Check for Obstacle**:
+   - **Persistent Obstacle**: If the obstacle is still present after 25 seconds, the robot needs to calculate a detour path around it.
+   - **Obstacle Cleared**: If the obstacle has cleared, the robot resumes its predefined path.
+
+4. **Calculate Detour Path**:
+   - **Occupancy Grid Creation**: The LiDAR or camera data is used to create an occupancy grid, which maps the obstacles in the robot's environment.
+     - **Implementation**:
+       - The `calculate_detour_path(scan_data)` function processes the sensor data to create the occupancy grid.
+   - **A* Pathfinding Algorithm**: The A* algorithm is used to calculate the shortest path around the detected obstacles.
+     - **A* Algorithm Steps**:
+       1. **Initialize**: Set the start node (current position) and goal node (next point on the predefined path).
+       2. **Open List**: Add the start node to the open list (nodes to be evaluated).
+       3. **Node Evaluation**: Continuously evaluate nodes by selecting the one with the lowest f-cost (g-cost + h-cost).
+       4. **Path Reconstruction**: If the goal node is reached, reconstruct the path by tracing back from the goal node to the start node.
+       5. **Neighbor Evaluation**: For each evaluated node, add its walkable neighbors to the open list and repeat the evaluation process.
+     - **Implementation**:
+       - The `a_star_algorithm()` function in `lidar_object_detection.py` and `camera_path_planning.py` implements the A* pathfinding algorithm.
+
+5. **Follow Detour Path**:
+   - **Move Along Detour Path**: The robot follows the detour path calculated by the A* algorithm to navigate around the obstacle.
+     - **Implementation**:
+       - The `follow_path(path)` function in `lidar_object_detection.py` and `camera_path_planning.py` moves the robot along the detour path by sequentially following the points on the path.
+   - **Real-Time Adjustments**: As the robot follows the detour path, it continuously monitors for new obstacles and makes real-time adjustments if necessary.
+
+6. **Return to Predefined Path**:
+   - **Recalculate Position**: Once the robot has navigated around the obstacle, it recalculates its position relative to the predefined path.
+     - **Implementation**:
+       - The `find_nearest_point_on_path(current_position, path)` function in `path_following.py` determines the nearest point on the predefined path.
+   - **Re-Join Predefined Path**: The robot adjusts its movement to return to the nearest point on the predefined path and resumes following the original route towards the final destination.
+     - **Implementation**:
+       - The `return_to_path()` function in `lidar_object_detection.py` and `camera_path_planning.py` calculates the direction and distance to the nearest point on the predefined path and adjusts the robot's movement accordingly.
+
+By following these detailed steps, the D.A.I.S.E. project ensures that the robot can dynamically adapt to obstacles, calculate detour paths using the A* algorithm, and seamlessly return to the predefined path, all while maintaining accurate and efficient navigation towards the final destination.
 
 ### Visualization and Debugging
 
-- **Real-Time Visualization**: Displays the robot's path and position for monitoring and debugging.
-- **Data Logging**: Records sensor data and robot states for analysis and tuning.
+#### Real-Time Visualization
+Real-time visualization displays the robot's path, position, and detected obstacles for monitoring and debugging purposes.
+
+**Implementation:**
+The visualization script uses Matplotlib to create real-time plots of the robot's path and position. The plots are updated continuously with the robot's current state and detected obstacles.
+
+#### Data Logging
+Data logging records sensor data and robot states for analysis and tuning. This data is essential for improving the robot's performance and making necessary adjustments to the algorithms.
+
+**Implementation:**
+Sensor data and robot states are logged to files in CSV format. These logs can be analyzed to understand the robot's behavior and identify areas for improvement.
 
 ### Software Development Practices
 
-- **Modular Design**: Structures code into modules for readability, maintainability, and scalability.
-- **Threading**: Uses threads to handle different tasks concurrently.
+#### Modular Design
+The code is structured into modules that handle specific tasks, such as motor control, path following, obstacle detection, and sensor fusion. This modular design improves readability, maintainability, and scalability of the software.
+
+**Implementation:**
+Each script in the project is designed to perform a specific function. For example, `motor_control.py` handles motor control, `path_following.py` handles path following, and `sensor_fusion.py` handles sensor fusion. This separation of concerns makes the code easier to understand and maintain.
+
+#### Threading
+Threads are used to handle different tasks concurrently, such as running the sensor fusion loop, reading sensor data, and controlling motors. Threading ensures that the robot can perform multiple operations simultaneously, improving efficiency and responsiveness.
+
+**Implementation:**
+The sensor fusion process runs in a separate thread, allowing it to continuously integrate data from multiple sensors while the main control loop handles navigation and obstacle detection. The `threading` module in Python is used to create and manage threads.
+
 
 ##
 ## Detailed Description of Each Script in the D.A.I.S.E. Project
