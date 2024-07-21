@@ -561,7 +561,7 @@ python3 main.py
 ##
 ## Flowchart
 
-![Daise flowchart 2](https://github.com/user-attachments/assets/ce58a0d2-4acc-49fe-a863-7bfec431cd85)
+![Daise Flowchart 3](https://github.com/user-attachments/assets/3593fe45-a591-4f58-8656-42ac5e367650)
 
 ### Start:
 - The process begins by initializing all system components. This includes setting up the Raspberry Pi, initializing the sensor fusion thread, starting the LiDAR motor, and checking the sensor’s health status.
