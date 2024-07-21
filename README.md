@@ -1,5 +1,6 @@
 ![Daise Logo](https://github.com/user-attachments/assets/79a0a723-003d-4940-9f4d-7455bb1a33df)
 
+---
 
 # D.A.I.S.E - Delivery Autonomous Intelligent Sidewalk Explorer
 
@@ -11,7 +12,8 @@ D.A.I.S.E (Delivery Autonomous Intelligent Sidewalk Explorer) is designed to nav
 This project is the first prototype of D.A.I.S.E, built using materials and tools available within our budget constraints. As a prototype, the robot does not carry any payload because our initial focus is testing and validating the software and navigation systems.
 
 
-##
+---
+
 ## Objectives
 
 - **Low-Cost Design**: Develop a functional delivery robot within a $400 budget.
@@ -20,7 +22,8 @@ This project is the first prototype of D.A.I.S.E, built using materials and tool
 - **Sensor Fusion**: Combine data from multiple sensors (GPS, IMU, LiDAR, Camera) to improve navigation accuracy.
 - **Real-Time Visualization**: Real-time visualization of the robot's path and current position.
 
-##  
+---
+ 
 ## Key Features
 
 - **GPS-Based Navigation**: The robot uses GPS coordinates for global path planning and navigation.
@@ -31,7 +34,8 @@ This project is the first prototype of D.A.I.S.E, built using materials and tool
 - **Sensor Fusion**: Combines data from GPS, IMU, LiDAR, and camera for improved accuracy and reliability.
 - **Real-Time Visualization**: Displays the robot's path and current position using Matplotlib for real-time monitoring.
 
-##
+---
+
 ## Hardware Components
 
 - **Raspberry Pi 4 Computer Model B**: The main processing unit for running the robot's software.
@@ -42,7 +46,8 @@ This project is the first prototype of D.A.I.S.E, built using materials and tool
 - **Arducam 5MP Camera (OV5647)**: For local path planning and obstacle detection.
 - **Power System**: Includes a LiPo battery, buck converter, and L298N motor drivers.
 
-##
+---
+
 ## Mechanical Design
 
 ### CAD model
@@ -55,8 +60,9 @@ This project is the first prototype of D.A.I.S.E, built using materials and tool
 
 As this is a prototype, the outer body was designed using a storage box from a dollar store, and 3D-printed parts were used to attach and support certain components. All the components were arranged and placed with consideration to maintain the center of gravity and ensure stability. This approach allowed us to focus on the functionality and testing of the software while staying within our budget constraints.
 
-##
-## Detailed Electronic Connections for D.A.I.S.E.
+---
+
+## Electronic Connections.
 
 ### Components and Their Connections
 
@@ -126,105 +132,342 @@ As this is a prototype, the outer body was designed using a storage box from a d
 
 ![Daise Electronics](https://github.com/user-attachments/assets/0046365f-de82-46ab-b9c2-d106c93564ef)
 
+---
 
-##
 ## Assembly of D.A.I.S.E
 https://github.com/user-attachments/assets/a9027fc0-b29c-4042-94c8-281aaddbccc7
 
 https://github.com/user-attachments/assets/8f086992-f5dc-48b8-a38d-5520f3ea8299
 
+---
 
-##
-## Major Concepts of Robotics Involved in the D.A.I.S.E. Project
+## Control system of the D.A.I.S.E
 
-### Kinematics and Dynamics
+The control system of the D.A.I.S.E. robot involves managing the four-wheel-drive (4WD) system using differential drive kinematics and Proportional-Integral-Derivative (PID) controllers. This section details how the motors are controlled to achieve precise movement and speed regulation.
 
-#### 4WD Differential Drive Kinematics
-To control its movement, the D.A.I.S.E. robot uses a four-wheel-drive (4WD) system with differential drive kinematics. This involves controlling the speeds and directions of the four DC motors to achieve forward, backward, and turning motions.
+![Daise Control Flowchart3](https://github.com/user-attachments/assets/c6ef8c7a-f5a8-4bc9-852c-f7f78a239119)
 
-**Mathematical Formulation:**
+1. **Start**
 
-The following equations can describe the differential drive kinematics:
+   **Initialize System Components:**
+   - Set up the Raspberry Pi, motor driver (L298N), and DC motors.
+   - Configure GPIO pins for motor control and encoder feedback.
+   - Initialize PWM signals for motor speed control.
 
-$$v = \frac{r}{2} (\omega_r + \omega_l)$$
+2. **Motor Initialization**
 
-$$\omega = \frac{r}{d} (\omega_r - \omega_l)$$
+   **Initialize Motors:**
+   - Define motor control functions to set speed and direction for each motor.
+   - Use GPIO pins to control the direction and PWM signals to control the speed.
+   - Ensure that each motor's encoder is correctly connected for feedback.
 
-Where:
-- `v`  is the linear velocity of the robot.
-- `omega` is the angular velocity of the robot.
-- `r` is the radius of the wheels.
-- `d` is the distance between the wheels.
-- `omega_r` and `omega_l` are the angular velocities of the right and left wheels, respectively.
+3. **Motor Speed Control**
 
-**Implementation:**
-In the motor control script, the speeds of the motors are controlled using PWM signals. The direction of each motor is controlled using GPIO pins to achieve the desired motion. The motor encoders provide feedback to adjust the motor speeds and directions accurately.
+   **Set Desired Motor Speeds:**
+   - Use path-following and navigation algorithms to determine the desired speeds for each motor.
+   - Set target speeds for the motors based on the desired movement direction (forward, backward, left, right).
 
-#### PID Control
-Proportional-Integral-Derivative (PID) controllers are used to maintain precise control over the motor speeds. Each motor's speed is regulated using a PID controller that adjusts the motor's power based on the difference between the desired and actual speeds.
+4. **PID Control Loop**
 
-**PID Control Equations:**
+   **Initialize PID Controllers:**
+   - Initialize PID controllers for each motor with predefined gains (\( K_p \), \( K_i \), \( K_d \)).
+   - Define PID control equations to adjust motor speeds based on the error between desired and actual speeds:
+     
+     $$u(t) = K_p e(t) + K_i \int e(t) dt + K_d \frac{de(t)}{dt}$$
+     
+     Where \( u(t) \) is the control input, \( K_p \), \( K_i \), and \( K_d \) are the gains, and \( e(t) \) is the error.
 
-$$u(t) = K_p e(t) + K_i \int e(t) dt + K_d \frac{de(t)}{dt}$$
+   **Real-Time Motor Control:**
+   - **Read Encoder Feedback:**
+     - Continuously read encoder values to get the actual speeds of each motor.
+     - Calculate the error between the desired and actual motor speeds.
+   - **Adjust Motor Speeds:**
+     - Use the PID controllers to adjust the PWM signals for each motor.
+     - Update the motor speeds in real-time to minimize the error and achieve smooth and accurate movement.
 
-where:
-- `u(t)` is the control input.
-- `K_p`, `K_i`, and `K_d` are the proportional, integral, and derivative gains, respectively.
-- `e(t)` is the error between the desired and actual speeds.
+5. **4WD Differential Drive Kinematics**
 
-**Implementation:**
-In the motor control script, PID controllers are implemented for each motor. The encoder readings provide feedback for the actual motor speeds, and the PID controller adjusts the PWM signals to maintain the desired speeds.
+   **Calculate Robot Velocity:**
+   - Use differential drive kinematics equations to calculate the robot’s linear and angular velocities:
+     
+     $$v = \frac{r}{2} (\omega_r + \omega_l)$$
+     
+     $$\omega = \frac{r}{d} (\omega_r - \omega_l)$$
 
-### Sensor Integration and Fusion
+     Where \( v \) is the linear velocity, \( \omega \) is the angular velocity, \( r \) is the wheel radius, \( d \) is the distance between wheels, and \( \omega_r \) and \( \omega_l \) are the wheel angular velocities.
 
-#### Sensor Fusion
-Sensor fusion combines data from multiple sensors (GPS, IMU, LiDAR, Camera) to improve the accuracy and robustness of the robot's navigation and obstacle detection.
+   **Control Robot Movement:**
+   - Adjust motor speeds to control the robot's linear and angular velocities.
+   - Use kinematic equations to ensure coordinated movement of all four wheels.
 
-**Implementation:**
-The sensor fusion script continuously collects data from the GPS, IMU, LiDAR, and Camera sensors. The data is integrated to estimate the robot's state (position, velocity, orientation) using a Kalman filter.
+6. **Dynamic Adjustments**
 
-#### Kalman Filtering
-A Kalman filter is used to estimate the robot’s state from noisy sensor measurements. The filter integrates data from the GPS, IMU, and other sensors to provide a more accurate and consistent estimate of the robot's position and movement.
+   **Handle Real-Time Adjustments:**
+   - Continuously monitor the robot’s movement and make dynamic adjustments as needed.
+   - Ensure the robot follows the predefined path and responds to obstacles effectively.
 
-**Kalman Filter Equations:**
+7. **Integration with Other Processes**
 
-![Screenshot 2024-07-20 090501](https://github.com/user-attachments/assets/a1c650a5-4e41-4cce-9981-f05b83b098e6)
+   **Integrate with Sensor Fusion:**
+   - Use sensor fusion data to adjust motor speeds and directions based on the robot’s current position and orientation.
+   - Ensure the robot stays on course and navigates accurately.
 
-Where:
+   **Respond to Obstacle Detection:**
+   - Adjust motor speeds and directions in real-time to avoid obstacles detected by the LiDAR and camera sensors.
+   - Use the dynamic re-routing process to navigate around obstacles and return to the original path.
 
-- `hat{x}_{k|k-1}` is the predicted state estimate.
-- `P_{k|k-1}` is the predicted covariance estimate.
-- `K_k` is the Kalman gain.
-- `z_k` is the measurement.
-- `F`, `B`, `H`, `Q`, and `R` are the system matrices.
+8. **End**
 
-### Localization and Mapping
+   **Complete Motor Control Process:**
+   - Ensure the robot reaches its destination accurately and efficiently.
+   - Review the logged data to assess performance and identify areas for improvement.
+     
+---
 
-#### GPS Navigation
-The robot uses a GPS module to record its path and navigate to predefined coordinates. GPS coordinates are used for global path planning and to track the robot's position on a larger scale.
+## Sensor Integration and Fusion 
 
-**Implementation:**
-The GPS module provides latitude and longitude data, which is recorded and used to define the robot's path. The path-following script uses this data to guide the robot to its destination.
+Sensor integration and fusion involve combining data from multiple sensors to improve the accuracy and robustness of the robot's navigation and obstacle detection. This section details how the D.A.I.S.E. robot integrates data from GPS, IMU, LiDAR, and Camera sensors to estimate its state using a Kalman filter.
 
-#### IMU Data
-An IMU (Inertial Measurement Unit) provides accelerometer and gyroscope data to estimate the robot's orientation and motion. This data is crucial for correcting the robot's course and maintaining stability.
+![Daise Sensor Fusion Flowchart](https://github.com/user-attachments/assets/23bb7a04-4d95-4a37-a396-93b89daf3616)
 
-**Implementation:**
-The IMU module provides orientation (roll, pitch, yaw) and acceleration data. This data is integrated with the GPS data in the sensor fusion script to improve the accuracy of the robot's state estimation.
+1. **Start:**
+   - Set up the Raspberry Pi and initialize the necessary libraries for sensor data collection and processing.
+   - Configure GPIO pins for sensor integration and ensure all sensors (GPS, IMU, LiDAR, Camera) are correctly connected and initialized.
 
-#### LiDAR Mapping
-A 2D LiDAR sensor creates occupancy grids to identify obstacles in the robot's path. The LiDAR data is processed to map the environment, helping the robot to detect and avoid obstacles dynamically.
+2. **Start Sensor Fusion Thread:**
+   - Initiate Sensor Fusion Process:
+     - Start a separate thread for the sensor fusion process to ensure continuous and real-time data integration from multiple sensors.
+     - The sensor fusion script begins collecting data from the GPS, IMU, LiDAR, and Camera sensors.
 
-**Implementation:**
-The LiDAR object detection script processes the LiDAR data to detect obstacles. The data is used to create an occupancy grid, which is used for obstacle detection and avoidance.
+3. **Read Sensor Data:**
+   - **Read GPS Data:**
+     - Continuously read latitude and longitude data from the GPS module.
+     - Parse the GPS data to obtain the current coordinates of the robot.
+     - This data provides the global position of the robot for path planning.
+   
+   - **Read IMU Data:**
+     - Continuously read accelerometer and gyroscope data from the IMU (MPU-6050).
+     - Parse the IMU data to obtain orientation (roll, pitch, yaw) and acceleration information.
+     - This data helps in estimating the robot’s orientation and motion dynamics.
+   
+   - **Read LiDAR Data:**
+     - Continuously read distance measurements from the LiDAR sensor.
+     - Parse the LiDAR data to detect obstacles and map the environment.
+     - This data helps in creating an occupancy grid for obstacle detection and avoidance.
+   
+   - **Read Camera Data:**
+     - Continuously capture frames from the camera.
+     - Process the frames to detect obstacles using image processing techniques.
+     - This data helps in identifying obstacles that may not be detected by the LiDAR, particularly those that are below the LiDAR's detection height.
 
-### Path Planning and Following
+4. **Estimate Robot State with Kalman Filter:**
+   - **Integrate Sensor Data:**
+     - Combine data from the GPS, IMU, LiDAR, and Camera sensors using a Kalman filter.
+     - The Kalman filter predicts and updates the robot’s state (position, velocity, orientation) based on sensor measurements.
 
-#### Carrot Chasing Algorithm
+   - **Kalman Filter Equations:**
+     - **Prediction:**
+       ```math
+       \hat{x}_{k|k-1} = F \hat{x}_{k-1|k-1} + B u_{k-1}
+       ```
+       ```math
+       P_{k|k-1} = F P_{k-1|k-1} F^T + Q
+       ```
+     - **Update:**
+       ```math
+       K_k = P_{k|k-1} H^T (H P_{k|k-1} H^T + R)^{-1}
+       ```
+       ```math
+       \hat{x}_{k|k} = \hat{x}_{k|k-1} + K_k (z_k - H \hat{x}_{k|k-1})
+       ```
+       ```math
+       P_{k|k} = (I - K_k H) P_{k|k-1}
+       ```
+
+     Where:
+     - \( \hat{x}_{k|k-1} \) is the predicted state estimate.
+     - \( P_{k|k-1} \) is the predicted covariance estimate.
+     - \( K_k \) is the Kalman gain.
+     - \( z_k \) is the measurement.
+     - \( F \), \( B \), \( H \), \( Q \), and \( R \) are the system matrices.
+
+   - **Predict Robot State:**
+     - Use the Kalman filter prediction step to estimate the robot's state based on previous state estimates and control inputs.
+     - This prediction accounts for the robot's motion dynamics and provides an initial estimate for the current state.
+
+   - **Update Robot State:**
+     - Use the Kalman filter update step to refine the robot's state estimate based on new sensor measurements.
+     - Calculate the Kalman gain to determine the weighting of the prediction and measurement.
+     - Update the state estimate and covariance matrix to improve accuracy.
+
+5. **Output Estimated State:**
+   - **Continuous State Output:**
+     - The estimated state (position, velocity, orientation) is continuously outputted for use in path planning and navigation.
+     - This state information is critical for accurately guiding the robot along its path and avoiding obstacles.
+
+6. **Log Sensor Data:**
+   - **Data Logging:**
+     - Record the raw sensor data (GPS, IMU, LiDAR, Camera) and the estimated robot state for analysis.
+     - Store the data in CSV files for post-operation review and tuning.
+     - This data is essential for improving the robot’s localization and mapping accuracy.
+
+7. **End:**
+   - **Complete Sensor Fusion Process:**
+     - Ensure the continuous and accurate integration of sensor data throughout the robot's operation.
+     - Review the logged data to assess performance and identify areas for improvement.
+---
+
+## Localization and Mapping
+
+Localization and mapping involve using sensor data to determine the robot's position and create a map of its environment. This section details how the D.A.I.S.E. robot uses GPS, IMU, and LiDAR data to navigate and avoid obstacles.
+
+![Daise Localisation and Mapping Flochart](https://github.com/user-attachments/assets/516d8caa-9a5e-4b67-9e55-e4127fa0eba3)
+
+1. **Start:**
+   - Initialize System Components:
+     - Set up the GPS module, IMU (MPU-6050), and LiDAR sensor on the Raspberry Pi.
+     - Establish serial communication with the GPS module.
+     - Initialize the I2C communication for the IMU.
+     - Establish communication with the LiDAR sensor.
+
+2. **Record GPS Coordinates:**
+   - Record GPS Coordinates:
+     - Record GPS coordinates along the desired path using the `record_coordinates.py` script.
+     - Save the recorded GPS data in a CSV file for future use.
+
+3. **Convert and Visualize GPS Data:**
+   - Convert GPS Data to KML for Visualization:
+     - Convert the recorded GPS data to a KML file for visualization in Google Earth.
+     - Manually correct any errors in the recorded coordinates to ensure an accurate path.
+
+4. **Read Sensor Data:**
+   - **Read GPS Data:**
+     - Continuously read latitude and longitude data from the GPS module.
+     - Parse the GPS data to obtain the current coordinates of the robot.
+     - Store the GPS data for real-time navigation and path recording.
+   
+   - **Read IMU Data:**
+     - Continuously read accelerometer and gyroscope data from the IMU.
+     - Parse the IMU data to obtain orientation (roll, pitch, yaw) and acceleration information.
+     - Store the IMU data for real-time orientation and motion dynamics.
+
+   - **Read LiDAR Data:**
+     - Continuously read distance measurements from the LiDAR sensor.
+     - Parse the LiDAR data to detect obstacles and map the environment.
+     - Store the LiDAR data for real-time mapping and obstacle detection.
+
+5. **Estimate Robot State with Sensor Fusion:**
+   - **Predict Robot State:**
+     - Use the Kalman filter to integrate data from the GPS and IMU sensors.
+     - Predict the robot’s state (position, velocity, orientation).
+       
+   - **Update Robot’s Position:**
+     - Continuously update the robot’s position based on the sensor fusion output.
+     - Use the updated position to guide the robot along the predefined path.
+
+6. **Create Occupancy Grid:**
+   - **Generate Occupancy Grid Map:**
+     - Use the LiDAR data to create an occupancy grid map of the environment.
+     - Mark occupied cells where obstacles are detected and free cells for navigable space.
+
+   - **Integrate Mapping with Localization:**
+     - Combine the occupancy grid with the robot’s current position and orientation from the sensor fusion.
+     - Update the map in real-time as the robot moves and new LiDAR data is obtained.
+
+7. **Use the Map for Path Planning and Obstacle Avoidance:**
+   - **Utilize Occupancy Grid for Path Planning:**
+     - Use the occupancy grid for path planning algorithms to navigate around obstacles.
+     - Continuously update the path based on the latest map information to ensure safe and efficient navigation.
+
+   - **Execute Path Planning and Obstacle Avoidance:**
+     - Implement dynamic re-routing to adapt to obstacles in real-time.
+     - Calculate detour paths around obstacles using the A* algorithm.
+     - Follow the detour path and then return to the original predefined path.
+
+8. **Log Sensor Data:**
+   - **Record and Analyze Sensor Data:**
+     - Log the GPS, IMU, and LiDAR data along with the estimated robot state for analysis.
+     - Store the data in CSV files for post-operation review and tuning.
+     - Use the recorded data to improve the robot’s localization and mapping accuracy.
+
+9. **End:**
+   - **Complete Localization and Mapping Process:**
+     - Ensure the robot has reached its final destination accurately.
+     - Review the logged data to assess performance and identify areas for improvement.
+---
+
+## Path Planning and Following
+
+Path planning and following are crucial aspects of the D.A.I.S.E. robot's functionality. These processes involve determining the optimal path for the robot to reach its destination and dynamically adjusting the path to avoid obstacles. This section details the carrot-chasing algorithm for path following and the A* algorithm for obstacle avoidance.
+
+![Daise Path Planning and Following](https://github.com/user-attachments/assets/e1433161-5156-4348-8e16-623ab92105c4)
+
+1. **Start:**
+   - Initialize System Components:
+     - Set up the Raspberry Pi, motor driver (L298N), and DC motors.
+     - Configure GPIO pins for motor control and encoder feedback.
+     - Initialize the PWM signals for motor speed control.
+
+2. **Record GPS Coordinates:**
+   - Run Record Coordinates Script:
+     - Use the `record_coordinates.py` script to record GPS coordinates along the desired path.
+     - Save the recorded GPS data in a CSV file.
+
+3. **Load Path Data:**
+   - Load Path from CSV:
+     - Load the saved GPS data from the CSV file.
+     - Convert coordinates for path following.
+
+4. **Initialize Carrot Chasing Algorithm:**
+   - Define Lookahead Distance:
+     - Set the lookahead distance for the carrot-chasing algorithm.
+   - Initialize Variables for Current Position and Carrot:
+     - Set initial values for the robot's current position and the carrot point.
+
+5. **Path Following Using Carrot Chasing Algorithm:**
+   - Find Carrot Point:
+     - Determine the next lookahead point (carrot) on the path.
+   - Calculate Direction and Distance to Carrot:
+     - Compute the direction and distance from the robot's current position to the carrot point.
+   - Move to Carrot Point:
+     - Adjust the robot's movement to follow the carrot point.
+   - Integrate with Sensor Fusion:
+     - Use sensor fusion data to refine the robot's position and orientation.
+   - Respond to Control Commands:
+     - Adjust motor speeds and directions based on control commands.
+
+6. **Obstacle Detection and Avoidance:**
+   - Detect Obstacles:
+     - Continuously monitor the environment using LiDAR and camera sensors.
+   - Calculate Detour Path using A*:
+     - Create Occupancy Grid from Sensor Data:
+       - Generate an occupancy grid map using LiDAR data.
+     - Initialize Start and Goal Nodes:
+       - Set the current position as the start node and the carrot point as the goal node.
+     - Evaluate Nodes by Lowest f-cost:
+       - Continuously evaluate nodes to find the path with the lowest f-cost (g-cost + h-cost).
+     - Reconstruct Path from Goal to Start:
+       - Reconstruct the path from the goal node back to the start node.
+
+7. **Follow Detour Path:**
+   - Handle Real-Time Adjustments:
+     - Adjust the robot's movement in real-time to follow the detour path.
+   - Clear Obstacle and Recalculate Position:
+     - Once the obstacle is cleared, recalculate the robot's position.
+   - Find Nearest Point on Predefined Path:
+     - Determine the nearest point on the original path.
+   - Adjust Movement to Return to Predefined Path:
+     - Guide the robot back to the predefined path.
+
+8. **End:**
+   - Complete Path Planning and Following Process:
+     - Ensure the robot reaches its destination accurately and efficiently.
+     - Review the logged data to assess performance and identify areas for improvement.
+
+### Carrot Chasing Algorithm
 The carrot-chasing algorithm is used for path following, where the robot follows a look-ahead point (carrot) on the predefined path. The robot continually adjusts its direction to chase the carrot point, ensuring it stays on course.
 
 **Algorithm:**
-
 1. Determine the current position of the robot.
 2. Find the path's next look-ahead point (carrot) within a specified look-ahead distance.
 3. Calculate the direction and distance to the carrot point.
@@ -233,11 +476,10 @@ The carrot-chasing algorithm is used for path following, where the robot follows
 **Implementation:**
 The path-following script implements the carrot-chasing algorithm. The current position is fetched from the sensor fusion script, and the next carrot point is determined. The robot's movement is adjusted accordingly.
 
-#### A* Pathfinding
+### A* Pathfinding
 When obstacles are detected, the A* algorithm finds the shortest path around them. This algorithm calculates an optimal detour, allowing the robot to navigate around obstacles and return to the predefined path efficiently.
 
 **A* Algorithm:**
-
 1. Initialize the start and goal nodes.
 2. Add the start node to the open list.
 3. While the open list is not empty:
@@ -249,117 +491,218 @@ When obstacles are detected, the A* algorithm finds the shortest path around the
 **Implementation:**
 When an obstacle is detected, the detour path is calculated using the A* algorithm. The robot follows the detour path and then returns to the predefined path.
 
-### Obstacle Detection and Avoidance
+---
 
-#### LiDAR Obstacle Detection
-The LiDAR sensor detects obstacles based on distance measurements. When an obstacle is detected within a threshold distance, the robot stops and initiates rerouting to avoid the obstacle.
+## Obstacle Detection and Avoidance
 
-**Implementation:**
-The LiDAR object detection script reads the LiDAR data and checks for obstacles within a threshold distance. If an obstacle is detected, the robot stops and calculates a detour path using the A* algorithm.
+The obstacle detection and avoidance system of the D.A.I.S.E. robot ensures safe navigation by detecting obstacles using LiDAR and camera sensors and calculating detour paths when necessary. This section details how the robot detects obstacles and dynamically adjusts its path to avoid them.
 
-#### Camera-Based Obstacle Detection
-The camera detects obstacles in the robot's field of view using image processing techniques. This helps in identifying obstacles that may not be detected by the LiDAR, particularly those that are below the LiDAR's detection height.
+![Daise Obstacle Detection and Avoidance](https://github.com/user-attachments/assets/53678c0f-bb45-43db-ba9c-cc4555217b04)
 
-**Implementation:**
-The camera path planning script captures frames from the camera and processes them to detect obstacles. If an obstacle is detected, the robot stops and calculates a detour path using the A* algorithm.
+1. **Start**
 
-### Real-Time Control and Decision Making
+2. **Initialize System Components:**
+   - Set up the Raspberry Pi, LiDAR sensor, and camera.
+   - Initialize the necessary libraries and configure the GPIO pins for sensor integration.
 
-#### Control Loops
-Real-time control loops adjust motor speeds and directions based on sensor inputs. These loops ensure the robot responds quickly to changes in its environment, maintaining smooth and accurate movement.
+3. **Sensor Data Collection:**
 
-**Implementation:**
-Control loops are implemented in the motor control script. The PID controllers adjust the motor speeds based on encoder feedback to maintain the desired speeds.
+   **Initialize LiDAR Sensor:**
+   - Start the LiDAR sensor and check its health.
+   - Establish a connection to continuously read LiDAR data.
 
-#### Dynamic Re-Routing
+   **Initialize Camera:**
+   - Set up the camera module and load the calibration parameters.
+   - Ensure the camera is ready to capture frames for obstacle detection.
 
-Dynamic re-routing enables the robot to adapt to obstacles in real-time by calculating detour paths around obstacles and then returning to the original predefined path. This process involves obstacle detection, path planning, and seamlessly transitioning between paths to ensure the robot reaches its final destination efficiently and safely.
+4. **Obstacle Detection:**
 
-**Detailed Steps**
+   **Read LiDAR Data:**
+   - Continuously read data from the LiDAR sensor using the `read_lidar_data()` function in the `lidar_object_detection.py` script.
+   - Process the LiDAR data to detect obstacles within a specified threshold distance (e.g., 1 meter).
 
-1. **Obstacle Detection**:
-   - **LiDAR Obstacle Detection**: The LiDAR sensor continuously scans the environment and measures distances to nearby objects. If an obstacle is detected within a threshold distance (e.g., 1 meter), the robot immediately stops.
-     - **Implementation**:
-       - The `read_lidar_data()` function in `lidar_object_detection.py` reads the LiDAR data.
-       - If any distance measurement is below the threshold, the `handle_obstacle()` function is triggered.
-   - **Camera-Based Obstacle Detection**: The camera captures frames, and image processing techniques are used to identify obstacles within the robot's field of view. If an obstacle is detected, the robot stops.
-     - **Implementation**:
-       - The `get_camera_data()` function in `camera_path_planning.py` captures and processes camera frames.
-       - If an obstacle is detected, the `camera_handle_obstacle()` function is triggered.
+   **Read Camera Data:**
+   - Continuously capture frames from the camera using the `get_camera_data()` function in the `camera_path_planning.py` script.
+   - Preprocess the camera frames (grayscale conversion, blurring, edge detection) to detect obstacles in the robot's field of view.
 
-2. **Handling Obstacle**:
-   - **Stop the Robot**: As soon as an obstacle is detected, the robot's motors are stopped to prevent a collision.
-     - **Implementation**:
-       - The `stop()` function in `motor_control.py` stops all motors.
-   - **Wait for 25 Seconds**: The robot waits for 25 seconds to check if the obstacle clears on its own.
-     - **Implementation**:
-       - The `time.sleep(25)` statement in the `handle_obstacle()` function introduces a 25-second delay.
+   **Detect Obstacles:**
+   - Use LiDAR data to detect obstacles based on distance measurements.
+   - Use camera data to identify obstacles that may not be detected by the LiDAR, particularly those below the LiDAR's detection height.
 
-3. **Re-Check for Obstacle**:
-   - **Persistent Obstacle**: If the obstacle is still present after 25 seconds, the robot needs to calculate a detour path around it.
-   - **Obstacle Cleared**: If the obstacle has cleared, the robot resumes its predefined path.
+5. **Handling Obstacles:**
 
-4. **Calculate Detour Path**:
-   - **Occupancy Grid Creation**: The LiDAR or camera data is used to create an occupancy grid, which maps the obstacles in the robot's environment.
-     - **Implementation**:
-       - The `calculate_detour_path(scan_data)` function processes the sensor data to create the occupancy grid.
-   - **A* Pathfinding Algorithm**: The A* algorithm is used to calculate the shortest path around the detected obstacles.
-     - **A* Algorithm Steps**:
-       1. **Initialize**: Set the start node (current position) and goal node (next point on the predefined path).
-       2. **Open List**: Add the start node to the open list (nodes to be evaluated).
-       3. **Node Evaluation**: Continuously evaluate nodes by selecting the one with the lowest f-cost (g-cost + h-cost).
-       4. **Path Reconstruction**: If the goal node is reached, reconstruct the path by tracing back from the goal node to the start node.
-       5. **Neighbor Evaluation**: For each evaluated node, add its walkable neighbors to the open list and repeat the evaluation process.
-     - **Implementation**:
-       - The `a_star_algorithm()` function in `lidar_object_detection.py` and `camera_path_planning.py` implements the A* pathfinding algorithm.
+   **Stop the Robot:**
+   - As soon as an obstacle is detected, stop the robot's motors to prevent a collision.
+   - Use the `stop()` function in the `motor_control.py` script to stop all motors.
 
-5. **Follow Detour Path**:
-   - **Move Along Detour Path**: The robot follows the detour path calculated by the A* algorithm to navigate around the obstacle.
-     - **Implementation**:
-       - The `follow_path(path)` function in `lidar_object_detection.py` and `camera_path_planning.py` moves the robot along the detour path by sequentially following the points on the path.
-   - **Real-Time Adjustments**: As the robot follows the detour path, it continuously monitors for new obstacles and makes real-time adjustments if necessary.
+   **Wait for 25 Seconds:**
+   - Introduce a 25-second delay to check if the obstacle clears on its own.
+   - Use the `time.sleep(25)` statement in the `handle_obstacle()` function to wait.
 
-6. **Return to Predefined Path**:
-   - **Recalculate Position**: Once the robot has navigated around the obstacle, it recalculates its position relative to the predefined path.
-     - **Implementation**:
-       - The `find_nearest_point_on_path(current_position, path)` function in `path_following.py` determines the nearest point on the predefined path.
-   - **Re-Join Predefined Path**: The robot adjusts its movement to return to the nearest point on the predefined path and resumes following the original route towards the final destination.
-     - **Implementation**:
-       - The `return_to_path()` function in `lidar_object_detection.py` and `camera_path_planning.py` calculates the direction and distance to the nearest point on the predefined path and adjusts the robot's movement accordingly.
+   **Re-Check for Obstacle:**
+   - After 25 seconds, re-check the sensor data to see if the obstacle is still present.
+   - If the obstacle has cleared, resume following the predefined path.
+   - If the obstacle persists, proceed to calculate a detour path.
 
-By following these detailed steps, the D.A.I.S.E. project ensures that the robot can dynamically adapt to obstacles, calculate detour paths using the A* algorithm, and seamlessly return to the predefined path, all while maintaining accurate and efficient navigation towards the final destination.
+6. **Calculate Detour Path:**
 
-### Visualization and Debugging
+   **Create Occupancy Grid:**
+   - Use the LiDAR or camera data to create an occupancy grid, mapping the obstacles in the robot's environment.
+   - Use the `calculate_detour_path(scan_data)` function in the `lidar_object_detection.py` or `camera_path_planning.py` script to create the occupancy grid.
 
-#### Real-Time Visualization
-Real-time visualization displays the robot's path, position, and detected obstacles for monitoring and debugging purposes.
+   **A* Pathfinding Algorithm:**
+   - Use the A* algorithm to calculate the shortest path around the detected obstacles.
+   - Initialize the start node (current position) and goal node (next point on the predefined path).
+   - Add the start node to the open list (nodes to be evaluated).
+   - Continuously evaluate nodes by selecting the one with the lowest f-cost (g-cost + h-cost).
+   - If the goal node is reached, reconstruct the path by tracing back from the goal node to the start node.
+   - Add walkable neighbors of each evaluated node to the open list and repeat the evaluation process.
 
-**Implementation:**
-The visualization script uses Matplotlib to create real-time plots of the robot's path and position. The plots are updated continuously with the robot's current state and detected obstacles.
+7. **Follow Detour Path:**
 
-#### Data Logging
-Data logging records sensor data and robot states for analysis and tuning. This data is essential for improving the robot's performance and making necessary adjustments to the algorithms.
+   **Move Along Detour Path:**
+   - Use the `follow_path(path)` function in the `lidar_object_detection.py` or `camera_path_planning.py` script to navigate along the calculated detour path.
+   - Move the robot along the detour path, following each point sequentially.
 
-**Implementation:**
-Sensor data and robot states are logged to files in CSV format. These logs can be analyzed to understand the robot's behavior and identify areas for improvement.
+   **Real-Time Adjustments:**
+   - Continuously monitor for new obstacles and make real-time adjustments to the path.
+   - Ensure the robot dynamically adapts to changes in the environment.
 
-### Software Development Practices
+8. **Return to Predefined Path:**
 
-#### Modular Design
-The code is structured into modules that handle specific tasks, such as motor control, path following, obstacle detection, and sensor fusion. This modular design improves readability, maintainability, and scalability of the software.
+   **Recalculate Position:**
+   - Once the robot has navigated around the obstacle, recalculate its position relative to the predefined path.
+   - Use the `find_nearest_point_on_path(current_position, path)` function in the `path_following.py` script to determine the nearest point on the predefined path.
 
-**Implementation:**
-Each script in the project is designed to perform a specific function. For example, `motor_control.py` handles motor control, `path_following.py` handles path following, and `sensor_fusion.py` handles sensor fusion. This separation of concerns makes the code easier to understand and maintain.
+   **Re-Join Predefined Path:**
+   - Adjust the robot's movement to return to the nearest point on the predefined path and resume following the original route towards the final destination.
+   - Use the `return_to_path()` function in the `lidar_object_detection.py` or `camera_path_planning.py` script to guide the robot back to the predefined path.
 
-#### Threading
-Threads are used to handle different tasks concurrently, such as running the sensor fusion loop, reading sensor data, and controlling motors. Threading ensures that the robot can perform multiple operations simultaneously, improving efficiency and responsiveness.
+9. **Integration with Other Processes:**
 
-**Implementation:**
-The sensor fusion process runs in a separate thread, allowing it to continuously integrate data from multiple sensors while the main control loop handles navigation and obstacle detection. The `threading` module in Python is used to create and manage threads.
+   **Integrate with Sensor Fusion:**
+   - Use sensor fusion data to update the robot's current position and orientation.
+   - Ensure accurate navigation by integrating data from GPS, IMU, LiDAR, and camera sensors.
+
+   **Respond to Control Commands:**
+   - Adjust motor speeds and directions based on obstacle detection and avoidance requirements.
+   - Ensure coordinated movement and accurate navigation towards the destination.
+
+10. **End:**
+
+   **Complete Obstacle Detection and Avoidance Process:**
+   - Ensure the robot reaches its destination accurately and efficiently.
+   - Review the logged data to assess performance and identify areas for improvement.
+---
+
+## Real-Time Control and Decision Making
 
 
-##
-## Detailed Description of Each Script in the D.A.I.S.E. Project
+The real-time control and decision-making system of the D.A.I.S.E. robot involves adjusting motor speeds and directions based on sensor inputs, ensuring the robot responds quickly to changes in its environment. This includes real-time obstacle detection, dynamic re-routing, and seamless transition between paths to reach the final destination efficiently and safely.
+
+![Daise Real-Time Control and Decision Making](https://github.com/user-attachments/assets/af95c0a9-3d25-4d56-833b-48bff42ef082)
+
+1. **Start**
+
+2. **Initialize System Components:**
+   - Set up the Raspberry Pi, motors, and sensors.
+   - Initialize necessary libraries and configure GPIO pins for motor control and sensor integration.
+
+3. **Control Loops:**
+
+   **Initialize Motor Control:**
+   - Set up GPIO pins for motor control and encoders.
+   - Initialize PWM signals for motor speed control.
+   - Ensure motors are ready to receive control commands.
+
+   **Initialize Sensors:**
+   - Initialize sensors (GPS, IMU, LiDAR, Camera) for data collection.
+   - Establish communication protocols (e.g., I2C for IMU, serial for GPS, USB for LiDAR, and CSI for Camera).
+
+4. **Real-Time Data Collection:**
+
+   **Read Sensor Data:**
+   - Continuously read data from GPS, IMU, LiDAR, and Camera sensors.
+   - Use the sensor fusion script to integrate data and estimate the robot's state (position, velocity, orientation).
+
+5. **PID Control:**
+
+   **Compute PID Control Inputs:**
+   - Calculate the control input for each motor using PID controllers.
+   - Use encoder feedback to determine the actual speed of each motor.
+   - Calculate the error between desired and actual speeds.
+
+   **Adjust Motor Speeds:**
+   - Adjust the PWM signals to the motors based on PID control inputs.
+   - Use the `set_motor_speed()` function in the `motor_control.py` script to control motor speeds.
+   - Ensure smooth and accurate motor control to achieve desired robot movement.
+
+6. **Dynamic Re-Routing:**
+
+   **Monitor for Obstacles:**
+   - Continuously monitor LiDAR and camera data for obstacle detection.
+   - If an obstacle is detected, initiate the obstacle handling process.
+
+   **Handle Obstacles:**
+   - **Stop the Robot:** Immediately stop the robot's motors to prevent a collision using the `stop()` function in the `motor_control.py` script.
+   - **Wait for 25 Seconds:** Introduce a 25-second delay to check if the obstacle clears on its own using the `time.sleep(25)` statement in the `handle_obstacle()` function.
+   - **Re-Check for Obstacle:** After 25 seconds, re-check the sensor data. If the obstacle persists, proceed to calculate a detour path.
+
+7. **Calculate Detour Path:**
+
+   **Create Occupancy Grid:**
+   - Use the LiDAR or camera data to create an occupancy grid, mapping the obstacles in the robot's environment.
+   - Use the `calculate_detour_path(scan_data)` function in the `lidar_object_detection.py` or `camera_path_planning.py` script to create the occupancy grid.
+
+   **A* Pathfinding Algorithm:**
+   - Use the A* algorithm to calculate the shortest path around the detected obstacles.
+   - **A* Algorithm Steps:**
+     1. **Initialize:** Set the start node (current position) and goal node (next point on the predefined path).
+     2. **Open List:** Add the start node to the open list (nodes to be evaluated).
+     3. **Node Evaluation:** Continuously evaluate nodes by selecting the one with the lowest f-cost (g-cost + h-cost).
+     4. **Path Reconstruction:** If the goal node is reached, reconstruct the path by tracing back from the goal node to the start node.
+     5. **Neighbor Evaluation:** For each evaluated node, add its walkable neighbors to the open list and repeat the evaluation process.
+   - Use the `a_star_algorithm()` function in `lidar_object_detection.py` and `camera_path_planning.py` to implement the A* pathfinding algorithm.
+
+8. **Follow Detour Path:**
+
+   **Move Along Detour Path:**
+   - Use the `follow_path(path)` function in the `lidar_object_detection.py` and `camera_path_planning.py` scripts to navigate along the calculated detour path.
+   - Move the robot along the detour path, following each point sequentially.
+
+   **Real-Time Adjustments:**
+   - Continuously monitor for new obstacles and make real-time adjustments to the path.
+   - Ensure the robot dynamically adapts to changes in the environment.
+
+9. **Return to Predefined Path:**
+
+   **Recalculate Position:**
+   - Once the robot has navigated around the obstacle, recalculate its position relative to the predefined path.
+   - Use the `find_nearest_point_on_path(current_position, path)` function in the `path_following.py` script to determine the nearest point on the predefined path.
+
+   **Re-Join Predefined Path:**
+   - Adjust the robot's movement to return to the nearest point on the predefined path and resume following the original route towards the final destination.
+   - Use the `return_to_path()` function in the `lidar_object_detection.py` and `camera_path_planning.py` scripts to guide the robot back to the predefined path.
+
+10. **Integration with Other Processes:**
+
+    **Integrate with Sensor Fusion:**
+    - Use sensor fusion data to update the robot's current position and orientation.
+    - Ensure accurate navigation by integrating data from GPS, IMU, LiDAR, and camera sensors.
+
+    **Respond to Control Commands:**
+    - Adjust motor speeds and directions based on obstacle detection and avoidance requirements.
+    - Ensure coordinated movement and accurate navigation towards the destination.
+
+11. **End:**
+
+    **Complete Real-Time Control and Decision Making Process:**
+    - Ensure the robot reaches its destination accurately and efficiently.
+    - Review the logged data to assess performance and identify areas for improvement.
+
+
+---
+## Code
 
 ### `main.py`
 **Purpose**: Orchestrates the overall operation of the robot.
@@ -487,7 +830,8 @@ The sensor fusion process runs in a separate thread, allowing it to continuously
 - **Recording Coordinates**:
   - `record_coordinates()`: Records GPS coordinates and saves to `gps_coordinates.csv`.
 
-## 
+---
+
 ## Step-by-Step Guide to Running the D.A.I.S.E. Project
 
 ### 1. Setting Up the VNC Viewer
@@ -552,13 +896,14 @@ python3 record_coordinates.py
   
 **Start the Main Script:**
 
-- In the terminal, navigate to the directory containing main.py.
+- In the terminal, navigate to the directory containing `main.py`.
 - Run the script to start the robot's autonomous operation:
 ```
 python3 main.py
 ```
 
-##
+---
+
 ## Flowchart
 
 ![Daise Flowchart 3](https://github.com/user-attachments/assets/3593fe45-a591-4f58-8656-42ac5e367650)
@@ -613,6 +958,9 @@ python3 main.py
 
 By following these detailed steps, the D.A.I.S.E. project ensures that the robot can autonomously navigate from its initial position to the final destination, avoiding obstacles and dynamically adjusting its path as needed. This comprehensive process leverages advanced robotics concepts, sensor fusion, and real-time decision-making to achieve efficient and reliable autonomous navigation.
 
+
+---
+
 ## Video Demo
 To see the D.A.I.S.E. robot in action, check out our video demonstration:
 
@@ -623,16 +971,17 @@ https://sites.google.com/view/cse-598-group-12/home
 ## Improvements or Future Work
 The D.A.I.S.E. project represents a successful prototype of a low-cost autonomous delivery robot. However, several improvements and future developments can enhance its performance and capabilities:
 
-1. **Buck Converter**: In future iterations, I will use the DFrobot Buck converter, known for its accuracy and reliability.
-2. **Better Motors**: Upgrading to higher quality motors will improve the robot's movement precision and durability.
-3. **Depth Camera or Stereo Camera**: Incorporating a depth camera or a stereo camera system will enhance the robot's obstacle detection and path planning abilities.
-4. **RTK GPS Module**: The current GPS module lacks the necessary accuracy for long-distance navigation. An RTK GPS module will significantly improve the robot's positional accuracy.
-5. **Deep Learning or VSLAM**: Integrating deep learning techniques or Visual Simultaneous Localization and Mapping (VSLAM) will enable more advanced navigation and environment understanding.
-6. **Custom PCB**: Developing a custom PCB will streamline the electronic setup, reduce wiring complexity, and improve reliability.
-7. **Data Sharing System**: Enhancing the data sharing system between the robot and the main computer is crucial. Implementing WebRTC or WebSocket for data transmission and developing a web interface for data visualization and control using WiFi will facilitate better communication and control.
-8. **Delivery System and Payload**: To make the robot suitable for real-world delivery applications, adding a payload carrying system and developing a customer-oriented delivery system will be essential.
-9. **Improved Battery Management**: Implementing a more efficient battery management system will extend the operational time of the robot.
-10. **Enhanced Software Architecture**: Refactoring the software to make it more modular and scalable will facilitate easier maintenance and future upgrades.
+- **Buck Converter**: In future iterations, I will use the DFrobot Buck converter, known for its accuracy and reliability.
+- **Better Motors**: Upgrading to higher quality motors will improve the robot's movement precision and durability.
+- **Depth Camera or Stereo Camera**: Incorporating a depth camera or a stereo camera system will enhance the robot's obstacle detection and path planning abilities.
+- **RTK GPS Module**: The current GPS module lacks the necessary accuracy for long-distance navigation. An RTK GPS module will significantly improve the robot's positional accuracy.
+- **Deep Learning or VSLAM**: Integrating deep learning techniques or Visual Simultaneous Localization and Mapping (VSLAM) will enable more advanced navigation and environment understanding.
+- **Custom PCB**: Developing a custom PCB will streamline the electronic setup, reduce wiring complexity, and improve reliability.
+- **Data Sharing System**: Enhancing the data sharing system between the robot and the main computer is crucial. Implementing WebRTC or WebSocket for data transmission and developing a web interface for data 
+     visualization and control using WiFi will facilitate better communication and control.
+- **Delivery System and Payload**: To make the robot suitable for real-world delivery applications, adding a payload carrying system and developing a customer-oriented delivery system will be essential.
+- **Improved Battery Management**: Implementing a more efficient battery management system will extend the operational time of the robot.
+- **Enhanced Software Architecture**: Refactoring the software to make it more modular and scalable will facilitate easier maintenance and future upgrades.
 
 ---
 
@@ -640,12 +989,13 @@ The D.A.I.S.E. project represents a successful prototype of a low-cost autonomou
 This project was undertaken as part of the course CSE 598: Perception in Robotics during Spring 2024.
 
 **Professor:**
-Dr. Nakul Gopalan
+Dr. Nakul Gopalan [(Website)](https://nakulgopalan.github.io/)
 
 **Team Members:**
-- Sai Shivani Lingampally
-- Anish Sai Racha
-- Jhanvi Shailesh Shah
+- Aryan Kumar Nadipally (Me) [(Linkedin)](https://www.linkedin.com/in/aryan-kumar-nadipally/)
+- Sai Shivani Lingampally [(Linkedin)](https://www.linkedin.com/in/sai-shivani-lingampally-b00986206/)
+- Anish Sai Racha [(Linkedin)](https://in.linkedin.com/in/anish-sai-racha-190ba51b7)
+- Jhanvi Shailesh Shah [(Linkedin)](https://www.linkedin.com/in/jhanvi2001/)
 
 I would like to express my gratitude to Dr. Nakul Gopalan for his guidance and support throughout the project. Special thanks to my teammates Sai Shivani Lingampally, Anish Sai Racha, and Jhanvi Shailesh Shah for their collaboration and hard work.
 
