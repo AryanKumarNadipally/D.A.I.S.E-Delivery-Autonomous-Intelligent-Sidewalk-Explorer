@@ -901,10 +901,39 @@ python3 record_coordinates.py
 ```
 python3 main.py
 ```
+---
+
+## Visualization and Debugging
+
+#### Real-Time Visualization
+Real-time visualization displays the robot's path, position, and detected obstacles for monitoring and debugging purposes.
+
+**Implementation:**
+The visualization script uses Matplotlib to create real-time plots of the robot's path and position. The plots are updated continuously with the robot's current state and detected obstacles.
+
+#### Data Logging
+Data logging records sensor data and robot states for analysis and tuning. This data is essential for improving the robot's performance and making necessary adjustments to the algorithms.
+
+**Implementation:**
+Sensor data and robot states are logged to files in CSV format. These logs can be analyzed to understand the robot's behavior and identify areas for improvement.
+
+## Software Development Practices
+
+#### Modular Design
+The code is structured into modules that handle specific tasks, such as motor control, path following, obstacle detection, and sensor fusion. This modular design improves readability, maintainability, and scalability of the software.
+
+**Implementation:**
+Each script in the project is designed to perform a specific function. For example, `motor_control.py` handles motor control, `path_following.py` handles path following, and `sensor_fusion.py` handles sensor fusion. This separation of concerns makes the code easier to understand and maintain.
+
+#### Threading
+Threads are used to handle different tasks concurrently, such as running the sensor fusion loop, reading sensor data, and controlling motors. Threading ensures that the robot can perform multiple operations simultaneously, improving efficiency and responsiveness.
+
+**Implementation:**
+The sensor fusion process runs in a separate thread, allowing it to continuously integrate data from multiple sensors while the main control loop handles navigation and obstacle detection. The `threading` module in Python is used to create and manage threads.
 
 ---
 
-## Flowchart
+## D.A.I.S.E Working System
 
 ![Daise Flowchart 3](https://github.com/user-attachments/assets/3593fe45-a591-4f58-8656-42ac5e367650)
 
@@ -956,8 +985,7 @@ python3 main.py
 - The loop repeats until the robot reaches the final destination as defined by the user-inputted coordinates.
 - Once the destination is reached, the flowchart ends, marking the completion of the robot's navigation task.
 
-By following these detailed steps, the D.A.I.S.E. project ensures that the robot can autonomously navigate from its initial position to the final destination, avoiding obstacles and dynamically adjusting its path as needed. This comprehensive process leverages advanced robotics concepts, sensor fusion, and real-time decision-making to achieve efficient and reliable autonomous navigation.
-
+By following these detailed steps, the D.A.I.S.E. project ensures that the robot can autonomously navigate from its initial position to the final destination, avoiding obstacles and dynamically adjusting its path as needed. 
 
 ---
 
@@ -986,7 +1014,7 @@ The D.A.I.S.E. project represents a successful prototype of a low-cost autonomou
 ---
 
 ## Acknowledgment
-This project was undertaken as part of the course CSE 598: Perception in Robotics during Spring 2024.
+This project was undertaken as part of the course CSE 598: Perception in Robotics during Spring 2024, during the master's program at ASU.
 
 **Professor:**
 Dr. Nakul Gopalan [(Website)](https://nakulgopalan.github.io/)
