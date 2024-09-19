@@ -11,6 +11,7 @@ D.A.I.S.E (Delivery Autonomous Intelligent Sidewalk Explorer) is designed to nav
 
 This project is the first prototype of D.A.I.S.E, built using materials and tools available within our budget constraints. As a prototype, the robot does not carry any payload because our initial focus is testing and validating the software and navigation systems.
 
+[Video Demo](https://sites.google.com/view/cse-598-group-12/home?authuser=0)
 
 ---
 
